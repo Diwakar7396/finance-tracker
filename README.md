@@ -1,3 +1,4 @@
+<img width="1875" height="893" alt="Screenshot 2026-04-13 123711" src="https://github.com/user-attachments/assets/af6d4ccd-0c0d-4cea-8e06-e0030d63384e" />
 # 💰 Finance Tracker (Full Stack Project)
 
 A simple and powerful **Finance Tracking Web Application** that helps users manage loans, repayments, and track remaining balances with interest.
