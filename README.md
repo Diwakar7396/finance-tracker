@@ -1,3 +1,4 @@
+<img width="873" height="552" alt="Screenshot 2026-04-13 123731" src="https://github.com/user-attachments/assets/f44c0c96-c9c6-4f45-b89a-77f6a8464da1" />
 <img width="1875" height="893" alt="Screenshot 2026-04-13 123711" src="https://github.com/user-attachments/assets/af6d4ccd-0c0d-4cea-8e06-e0030d63384e" />
 # 💰 Finance Tracker (Full Stack Project)
 
@@ -74,5 +75,6 @@ Give it a ⭐ on GitHub!
 <img width="472" height="524" alt="Screenshot 2026-04-13 123806" src="https://github.com/user-attachments/assets/a976e8ae-4924-46f9-9b85-2a9f1a1f688b" />
 
 
+<img width="472" height="524" alt="Screenshot 2026-04-13 123806" src="https://github.com/user-attachments/assets/9d953d4b-a98e-4963-aed7-843633bf76d0" />
 
 
