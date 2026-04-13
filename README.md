@@ -48,75 +48,6 @@ finance-tracker/
     ├── src/
     │   ├── App.js
     │   ├── App.css
-```
-
----
-
-## ⚙️ Setup Instructions
-
-### 1️⃣ Clone the repository
-
-```
-git clone https://github.com/your-username/finance-tracker.git
-cd finance-tracker
-```
-
----
-
-### 2️⃣ Backend Setup (PHP)
-
-#### Option 1: Using PHP built-in server
-
-```
-cd backend
-php -S localhost:8000
-```
-
----
-
-#### Option 2: Using XAMPP
-
-* Install XAMPP
-* Move backend folder to:
-
-```
-C:\xampp\htdocs\
-```
-
-* Start Apache
-* Backend runs at:
-
-```
-http://localhost/backend
-```
-
----
-
-### 3️⃣ Frontend Setup (React)
-
-```
-cd frontend
-npm install
-npm start
-```
-
----
-
-## 🔗 API Endpoints
-
-| Method | Endpoint                | Description        |
-| ------ | ----------------------- | ------------------ |
-| POST   | /add.php                | Add transaction    |
-| GET    | /getClients.php         | Get all clients    |
-| GET    | /getClient.php?name=XYZ | Get client details |
-
----
-
-## 📸 Screenshots
-
-*Add screenshots of your UI here (optional but recommended)*
-
----
 
 ## 💡 Future Improvements
 
@@ -137,4 +68,10 @@ npm start
 ## ⭐ If you like this project
 
 Give it a ⭐ on GitHub!
-Screenshot 2026-04-13 123711.pn
+<img width="1875" height="893" alt="Screenshot 2026-04-13 123711" src="https://github.com/user-attachments/assets/c3ea59ba-5dd3-4337-9362-882f8f6f0a78" />
+<img width="873" height="552" alt="Screenshot 2026-04-13 123731" src="https://github.com/user-attachments/assets/651908e2-0b43-485d-b40d-c1151d33d855" />
+<img width="472" height="524" alt="Screenshot 2026-04-13 123806" src="https://github.com/user-attachments/assets/a976e8ae-4924-46f9-9b85-2a9f1a1f688b" />
+
+
+
+
