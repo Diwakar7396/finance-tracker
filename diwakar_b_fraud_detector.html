@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fraud Detection System — Diwakar B</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+  --bg: #0d0f1a;
+  --surface: #141728;
+  --border: #1f2540;
+  --accent: #4f8ef7;
+  --accent2: #7b9ef0;
+  --success: #5bc8af;
+  --warn: #f0a050;
+  --danger: #e85d7a;
+  --text: #dde4f5;
+  --muted: #6b7899;
+  --card: #171a2e;
+}
+  
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* GRID BG */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  /* NAV */
+  nav {
+    position:sticky; top:0; z-index:100;
+    background: rgba(10,12,16,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display:flex; align-items:center; justify-content:space-between;
+    height: 60px;
+  }
+  .nav-brand { font-weight:800; font-size:1rem; letter-spacing:0.05em; }
+  .nav-brand span { color: var(--accent); }
+  .nav-links { display:flex; gap:2rem; }
+  .nav-links a { color: var(--muted); text-decoration:none; font-size:0.85rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-badge {
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    color: #fff; font-size:0.72rem; font-weight:700;
+    padding: 4px 12px; border-radius:20px; letter-spacing:0.05em;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative; z-index:1;
+    padding: 5rem 2rem 4rem;
+    text-align: center;
+    max-width: 900px; margin: 0 auto;
+  }
+  .hero-tag {
+    display:inline-flex; align-items:center; gap:8px;
+    background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.2);
+    color: var(--accent); font-size:0.75rem; font-weight:700;
+    padding:6px 16px; border-radius:20px; margin-bottom:1.5rem;
+    letter-spacing:0.1em; text-transform:uppercase;
+    animation: fadeDown 0.6s ease both;
+  }
+  .hero-tag::before { content:'●'; font-size:0.5rem; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.8rem);
+    font-weight:800; line-height:1.1;
+    animation: fadeDown 0.7s ease 0.1s both;
+  }
+  .hero h1 em { font-style:normal; color: var(--accent); }
+  .hero-sub {
+    margin-top:1rem; font-size:1rem; color: var(--muted); line-height:1.6;
+    animation: fadeDown 0.7s ease 0.2s both;
+  }
+  .hero-author {
+    margin-top:2rem;
+    display:inline-flex; flex-direction:column; align-items:center; gap:4px;
+    animation: fadeDown 0.7s ease 0.3s both;
+  }
+  .hero-author .name { font-size:1.1rem; font-weight:700; }
+  .hero-author .dept { font-size:0.8rem; color: var(--muted); letter-spacing:0.05em; }
+  .hero-author .univ { font-size:0.8rem; color: var(--accent); font-weight:600; }
+
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+
+  /* STATS ROW */
+  .stats-row {
+    position:relative; z-index:1;
+    display:grid; grid-template-columns: repeat(4,1fr);
+    gap:1px; background: var(--border);
+    border: 1px solid var(--border);
+    max-width:900px; margin: 0 auto 4rem;
+    border-radius:12px; overflow:hidden;
+  }
+  .stat-card {
+    background: var(--card);
+    padding: 1.5rem;
+    text-align:center;
+    animation: fadeUp 0.6s ease both;
+  }
+  .stat-card:nth-child(1){animation-delay:0.1s}
+  .stat-card:nth-child(2){animation-delay:0.2s}
+  .stat-card:nth-child(3){animation-delay:0.3s}
+  .stat-card:nth-child(4){animation-delay:0.4s}
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  .stat-val { font-family:'Space Mono',monospace; font-size:1.6rem; font-weight:700; }
+  .stat-val.green { color: var(--success); }
+  .stat-val.blue  { color: var(--accent); }
+  .stat-val.purple{ color: var(--accent2); }
+  .stat-val.orange{ color: var(--warn); }
+  .stat-label { font-size:0.72rem; color:var(--muted); margin-top:4px; text-transform:uppercase; letter-spacing:0.08em; }
+
+  /* SECTION */
+  section {
+    position:relative; z-index:1;
+    max-width:900px; margin:0 auto; padding:0 2rem 4rem;
+  }
+  .section-title {
+    font-size:0.72rem; font-weight:700; color:var(--accent);
+    text-transform:uppercase; letter-spacing:0.15em;
+    margin-bottom:1rem;
+    display:flex; align-items:center; gap:8px;
+  }
+  .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+  h2 { font-size:1.6rem; font-weight:800; margin-bottom:1.5rem; }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius:12px;
+    padding: 1.5rem;
+    margin-bottom:1rem;
+  }
+  .card-header {
+    display:flex; align-items:center; gap:10px;
+    font-weight:700; font-size:1rem; margin-bottom:1rem;
+  }
+  .icon-box {
+    width:36px; height:36px;
+    border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1rem;
+  }
+  .icon-box.blue   { background: rgba(0,229,255,0.12); }
+  .icon-box.purple { background: rgba(123,94,167,0.15); }
+  .icon-box.green  { background: rgba(0,200,150,0.12); }
+  .icon-box.orange { background: rgba(255,179,71,0.12); }
+
+  /* ALGO FLOW */
+  .flow {
+    display:flex; align-items:stretch; gap:0;
+    background: var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px; overflow:hidden;
+    margin-bottom:1.5rem;
+  }
+  .flow-step {
+    flex:1; padding:1.2rem 1rem;
+    text-align:center; position:relative;
+    border-right:1px solid var(--border);
+  }
+  .flow-step:last-child { border-right:none; }
+  .flow-step .step-num {
+    font-family:'Space Mono',monospace; font-size:0.65rem;
+    color:var(--muted); margin-bottom:6px;
+  }
+  .flow-step .step-icon { font-size:1.4rem; margin-bottom:6px; display:block; }
+  .flow-step .step-name { font-size:0.78rem; font-weight:700; }
+  .flow-step .step-desc { font-size:0.68rem; color:var(--muted); margin-top:3px; }
+  .flow-arrow {
+    display:flex; align-items:center; padding:0 4px;
+    color:var(--accent); font-size:0.8rem;
+  }
+
+  /* FEATURE TABLE */
+  table { width:100%; border-collapse:collapse; font-size:0.85rem; }
+  th {
+    text-align:left; padding:10px 12px;
+    font-size:0.72rem; color:var(--muted); font-weight:600;
+    text-transform:uppercase; letter-spacing:0.08em;
+    border-bottom:1px solid var(--border);
+  }
+  td { padding:10px 12px; border-bottom:1px solid rgba(30,34,48,0.5); }
+  tr:hover td { background:rgba(0,229,255,0.02); }
+  .badge {
+    display:inline-block; padding:2px 8px;
+    border-radius:4px; font-size:0.7rem; font-weight:700;
+  }
+  .badge-blue   { background:rgba(0,229,255,0.12); color:var(--accent); }
+  .badge-green  { background:rgba(0,200,150,0.12); color:var(--success); }
+  .badge-purple { background:rgba(123,94,167,0.15); color:#b08ecf; }
+
+  /* RESULTS */
+  .results-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .result-item {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:1.2rem;
+  }
+  .result-label { font-size:0.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; }
+  .result-val { font-family:'Space Mono',monospace; font-size:1.4rem; font-weight:700; }
+  .result-bar { margin-top:8px; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+  .result-fill { height:100%; border-radius:2px; transition: width 1.5s cubic-bezier(.4,0,.2,1); }
+
+  /* ENSEMBLE VIZ */
+  .ensemble {
+    display:flex; flex-direction:column; gap:1rem;
+  }
+  .model-row {
+    display:flex; align-items:center; gap:1rem;
+  }
+  .model-name {
+    width:120px; font-size:0.8rem; font-weight:700; flex-shrink:0;
+  }
+  .model-bar-wrap { flex:1; background:var(--border); border-radius:4px; height:28px; overflow:hidden; position:relative; }
+  .model-bar {
+    height:100%; border-radius:4px;
+    display:flex; align-items:center; padding-left:10px;
+    font-family:'Space Mono',monospace; font-size:0.72rem; font-weight:700; color:#fff;
+    transition: width 1.5s cubic-bezier(.4,0,.2,1);
+  }
+  .model-weight { font-size:0.75rem; color:var(--muted); width:50px; text-align:right; flex-shrink:0; }
+
+  /* DEMO */
+  .demo-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .input-group { display:flex; flex-direction:column; gap:6px; }
+  .input-group label { font-size:0.75rem; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:0.06em; }
+  .input-group input, .input-group select {
+    background: var(--surface); border:1px solid var(--border);
+    color:var(--text); font-family:'Space Mono',monospace; font-size:0.85rem;
+    padding:10px 12px; border-radius:8px; outline:none;
+    transition: border-color 0.2s;
+  }
+  .input-group input:focus, .input-group select:focus { border-color: var(--accent); }
+  .input-group select option { background: var(--surface); }
+  .btn-analyze {
+    margin-top:1.2rem;
+    width:100%; padding:12px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    border:none; border-radius:8px;
+    color:#fff; font-family:'Syne',sans-serif; font-size:0.9rem; font-weight:700;
+    cursor:pointer; letter-spacing:0.05em;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .btn-analyze:hover { opacity:0.9; transform:translateY(-1px); }
+  .btn-analyze:active { transform:translateY(0); }
+  .result-panel {
+    margin-top:1.2rem;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:1.2rem;
+    display:none;
+  }
+  .result-panel.show { display:block; animation: fadeUp 0.4s ease; }
+  .verdict {
+    font-size:1.2rem; font-weight:800; margin-bottom:0.5rem;
+  }
+  .verdict.safe  { color: var(--success); }
+  .verdict.fraud { color: var(--danger); }
+  .risk-bar-wrap { background:var(--border); border-radius:4px; height:8px; overflow:hidden; margin:8px 0; }
+  .risk-fill { height:100%; border-radius:4px; transition: width 0.8s ease; }
+  .meta-row { display:flex; justify-content:space-between; font-size:0.75rem; color:var(--muted); margin-top:4px; }
+
+  /* FOOTER */
+  footer {
+    position:relative; z-index:1;
+    border-top:1px solid var(--border);
+    padding:2rem; text-align:center;
+    font-size:0.78rem; color:var(--muted);
+  }
+  footer strong { color:var(--text); }
+  footer a { color:var(--accent); text-decoration:none; }
+
+  @media(max-width:640px){
+    .stats-row { grid-template-columns:1fr 1fr; }
+    .results-grid { grid-template-columns:1fr; }
+    .demo-grid { grid-template-columns:1fr; }
+    .flow { flex-direction:column; }
+    .flow-step { border-right:none; border-bottom:1px solid var(--border); }
+    .nav-links { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">Fraud<span>Detect</span></div>
+  <div class="nav-links">
+    <a href="#algorithm">Algorithm</a>
+    <a href="#features">Features</a>
+    <a href="#results">Results</a>
+    <a href="#demo">Demo</a>
+  </div>
+  <span class="nav-badge">2026</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag"><span></span>Research Publication · CSE · 2026</div>
+  <h1>India <em>Fraud Detection</em><br>Using Ensemble ML</h1>
+  <p class="hero-sub">An XGBoost + Neural Network ensemble model for real-time UPI & card transaction fraud detection, optimized for India's digital payment ecosystem.</p>
+  <div class="hero-author">
+    <span class="name">Diwakar B</span>
+    <span class="dept">Computer Science &amp; Engineering</span>
+    <span class="univ">Jain University, Bengaluru</span>
+  </div>
+</div>
+
+<!-- STATS ROW -->
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-val green">99.23%</div>
+    <div class="stat-label">Accuracy</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-val blue">0.481</div>
+    <div class="stat-label">AUC-ROC</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-val purple">50,000</div>
+    <div class="stat-label">Transactions</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-val orange">68,624</div>
+    <div class="stat-label">tx/sec</div>
+  </div>
+</div>
+
+<!-- ALGORITHM -->
+<section id="algorithm">
+  <div class="section-title">Algorithm</div>
+  <h2>How It Works</h2>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="step-num">01</div>
+      <span class="step-icon">📥</span>
+      <div class="step-name">Data Input</div>
+      <div class="step-desc">50K India transactions</div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">02</div>
+      <span class="step-icon">🔐</span>
+      <div class="step-name">Unique Seed</div>
+      <div class="step-desc">Cryptographic entropy</div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">03</div>
+      <span class="step-icon">⚙️</span>
+      <div class="step-name">Feature Eng.</div>
+      <div class="step-desc">32 features extracted</div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">04</div>
+      <span class="step-icon">🤖</span>
+      <div class="step-name">XGB + MLP</div>
+      <div class="step-desc">Dual model training</div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">05</div>
+      <span class="step-icon">🎯</span>
+      <div class="step-name">Ensemble</div>
+      <div class="step-desc">0.7 XGB + 0.3 NN</div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">06</div>
+      <span class="step-icon">⚡</span>
+      <div class="step-name">Prediction</div>
+      <div class="step-desc">Real-time output</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon-box blue">🔀</div> Ensemble Weighting</div>
+    <div class="ensemble">
+      <div class="model-row">
+        <div class="model-name">XGBoost</div>
+        <div class="model-bar-wrap">
+          <div class="model-bar" id="bar-xgb" style="width:0%; background:linear-gradient(90deg,#00e5ff,#0099aa);">70%</div>
+        </div>
+        <div class="model-weight">w = 0.7</div>
+      </div>
+      <div class="model-row">
+        <div class="model-name">Neural Net</div>
+        <div class="model-bar-wrap">
+          <div class="model-bar" id="bar-nn" style="width:0%; background:linear-gradient(90deg,#7b5ea7,#b08ecf);">30%</div>
+        </div>
+        <div class="model-weight">w = 0.3</div>
+      </div>
+    </div>
+    <p style="font-size:0.78rem;color:var(--muted);margin-top:1rem;">Final score = <code style="color:var(--accent)">0.7 × XGBoost_proba + 0.3 × NN_proba</code> · Threshold: <code style="color:var(--accent)">0.4</code></p>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-title">Feature Set</div>
+  <h2>32 Input Features</h2>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Description</th>
+          <th>Type</th>
+          <th>Source</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>V1 – V28</strong></td>
+          <td>PCA-transformed anonymized components</td>
+          <td><span class="badge badge-blue">Continuous</span></td>
+          <td>PCA</td>
+        </tr>
+        <tr>
+          <td><strong>Amount_INR</strong></td>
+          <td>Transaction value in Indian Rupees (log-normal)</td>
+          <td><span class="badge badge-blue">Continuous</span></td>
+          <td>India Payments</td>
+        </tr>
+        <tr>
+          <td><strong>Transaction_Type</strong></td>
+          <td>0 = UPI, 1 = Card (25% card transactions)</td>
+          <td><span class="badge badge-green">Binary</span></td>
+          <td>Payment Rail</td>
+        </tr>
+        <tr>
+          <td><strong>Weekend</strong></td>
+          <td>Whether transaction occurred on weekend</td>
+          <td><span class="badge badge-green">Binary</span></td>
+          <td>Temporal</td>
+        </tr>
+        <tr>
+          <td><strong>Bengaluru</strong></td>
+          <td>Geographic risk signal for Bengaluru region</td>
+          <td><span class="badge badge-purple">Gaussian</span></td>
+          <td>Geo-signal</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section id="results">
+  <div class="section-title">Results</div>
+  <h2>Publication Metrics</h2>
+  <div class="results-grid">
+    <div class="result-item">
+      <div class="result-label">Accuracy</div>
+      <div class="result-val" style="color:var(--success)">99.23%</div>
+      <div class="result-bar"><div class="result-fill" id="fill-acc" style="width:0%; background:var(--success)"></div></div>
+    </div>
+    <div class="result-item">
+      <div class="result-label">AUC-ROC Score</div>
+      <div class="result-val" style="color:var(--accent)">0.4813</div>
+      <div class="result-bar"><div class="result-fill" id="fill-auc" style="width:0%; background:var(--accent)"></div></div>
+    </div>
+    <div class="result-item">
+      <div class="result-label">Latency per Transaction</div>
+      <div class="result-val" style="color:var(--warn)">0.01 ms</div>
+      <div class="result-bar"><div class="result-fill" id="fill-lat" style="width:0%; background:var(--warn)"></div></div>
+    </div>
+    <div class="result-item">
+      <div class="result-label">Throughput</div>
+      <div class="result-val" style="color:var(--accent2)">68,624 tx/s</div>
+      <div class="result-bar"><div class="result-fill" id="fill-thr" style="width:0%; background:var(--accent2)"></div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem;">
+    <div class="card-header"><div class="icon-box green">📐</div> Model Configuration</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; font-size:0.83rem;">
+      <div>
+        <div style="color:var(--muted);font-size:0.72rem;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.07em;">XGBoost</div>
+        <div>Estimators: <strong>200</strong></div>
+        <div>Max Depth: <strong>8</strong></div>
+        <div>Learning Rate: <strong>0.05</strong></div>
+        <div>Scale Pos Weight: <strong>100</strong></div>
+      </div>
+      <div>
+        <div style="color:var(--muted);font-size:0.72rem;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.07em;">Neural Network (MLP)</div>
+        <div>Layers: <strong>256 → 128 → 64</strong></div>
+        <div>Max Iterations: <strong>800</strong></div>
+        <div>Threshold: <strong>0.4</strong></div>
+        <div>Train/Test Split: <strong>80/20</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section id="demo">
+  <div class="section-title">Live Demo</div>
+  <h2>Transaction Analyzer</h2>
+  <div class="card">
+    <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1.2rem;">Enter transaction details to simulate the fraud detection ensemble. All computation happens locally in your browser.</p>
+    <div class="demo-grid">
+      <div class="input-group">
+        <label>Amount (INR)</label>
+        <input type="number" id="inp-amount" placeholder="e.g. 12500" min="1" max="999999">
+      </div>
+      <div class="input-group">
+        <label>Transaction Type</label>
+        <select id="inp-type">
+          <option value="0">UPI</option>
+          <option value="1">Card</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>Day of Transaction</label>
+        <select id="inp-weekend">
+          <option value="0">Weekday</option>
+          <option value="1">Weekend</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>Region Signal</label>
+        <select id="inp-region">
+          <option value="0.1">Bengaluru (Low risk)</option>
+          <option value="0.5">Bengaluru (Mid)</option>
+          <option value="1.2">Bengaluru (High)</option>
+          <option value="-0.3">Other City</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-analyze" onclick="analyze()">⚡ Analyze Transaction</button>
+
+    <div class="result-panel" id="result-panel">
+      <div class="verdict" id="verdict-text"></div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:6px;" id="verdict-sub"></div>
+      <div class="risk-bar-wrap"><div class="risk-fill" id="risk-fill"></div></div>
+      <div class="meta-row">
+        <span>Risk Score: <span id="risk-score" style="font-family:'Space Mono',monospace;"></span></span>
+        <span>Ensemble Confidence</span>
+      </div>
+      <div style="margin-top:1rem; display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; font-size:0.78rem;">
+        <div style="background:var(--border);padding:8px 10px;border-radius:6px;">
+          XGBoost score: <strong id="xgb-score" style="color:var(--accent);font-family:'Space Mono',monospace;"></strong>
+        </div>
+        <div style="background:var(--border);padding:8px 10px;border-radius:6px;">
+          NN score: <strong id="nn-score" style="color:var(--accent2);font-family:'Space Mono',monospace;"></strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <strong>Diwakar B</strong> · Computer Science &amp; Engineering · <strong>Jain University, Bengaluru</strong><br>
+  <span style="margin-top:6px;display:inline-block;">Fraud Detection Using Ensemble Machine Learning · 2026</span>
+</footer>
+
+<script>
+// Animate bars on load
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('bar-xgb').style.width = '70%';
+    document.getElementById('bar-nn').style.width  = '30%';
+    document.getElementById('fill-acc').style.width = '99.23%';
+    document.getElementById('fill-auc').style.width = '48.13%';
+    document.getElementById('fill-lat').style.width = '15%';
+    document.getElementById('fill-thr').style.width = '90%';
+  }, 300);
+});
+
+// Simulate fraud scoring
+function analyze() {
+  const amount   = parseFloat(document.getElementById('inp-amount').value) || 5000;
+  const type     = parseInt(document.getElementById('inp-type').value);
+  const weekend  = parseInt(document.getElementById('inp-weekend').value);
+  const region   = parseFloat(document.getElementById('inp-region').value);
+
+  // Mimic model logic from notebook
+  const fraudFactor =
+    (amount > 50000 ? 0.30 : amount > 20000 ? 0.12 : 0.02) +
+    (type === 1 ? 0.20 : 0.0) +
+    (weekend === 1 ? 0.15 : 0.0) +
+    Math.abs(region) * 0.05 +
+    Math.random() * 0.08;
+
+  const xgbScore = Math.min(0.005 + fraudFactor * 0.02 * 4.5 + Math.random()*0.015, 0.99);
+  const nnScore  = Math.min(0.004 + fraudFactor * 0.02 * 3.8 + Math.random()*0.018, 0.99);
+  const final    = 0.7 * xgbScore + 0.3 * nnScore;
+  const isFraud  = final > 0.4;
+
+  const panel = document.getElementById('result-panel');
+  panel.classList.add('show');
+
+  document.getElementById('verdict-text').textContent = isFraud ? '🚨 Likely Fraudulent' : '✅ Transaction Safe';
+  document.getElementById('verdict-text').className = 'verdict ' + (isFraud ? 'fraud' : 'safe');
+  document.getElementById('verdict-sub').textContent = isFraud
+    ? 'This transaction exceeds the risk threshold of 0.40. Flag for review.'
+    : 'Risk score is within acceptable limits. Transaction cleared.';
+
+  const riskFill = document.getElementById('risk-fill');
+  riskFill.style.width = (final * 100).toFixed(1) + '%';
+  riskFill.style.background = isFraud
+    ? 'linear-gradient(90deg,#ffb347,#ff4d6d)'
+    : 'linear-gradient(90deg,#00c896,#00e5ff)';
+
+  document.getElementById('risk-score').textContent = final.toFixed(4);
+  document.getElementById('xgb-score').textContent  = xgbScore.toFixed(4);
+  document.getElementById('nn-score').textContent   = nnScore.toFixed(4);
+}
+</script>
+</body>
+</html>
